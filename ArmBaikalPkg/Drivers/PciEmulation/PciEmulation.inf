@@ -1,0 +1,34 @@
+#
+#
+#
+
+
+[Defines]
+  INF_VERSION                     = 0x00010019
+  BASE_NAME                       = PciEmulation
+  FILE_GUID                       = de69388d-e257-4917-a619-7e0ff5f4918c 
+  MODULE_TYPE                     = DXE_DRIVER
+  VERSION_STRING                  = 1.0
+
+  ENTRY_POINT                     = PciEmulationEntryPoint
+
+[Sources.common]
+  PciEmulation.c
+
+[Packages]
+  EmbeddedPkg/EmbeddedPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  NonDiscoverableDeviceRegistrationLib
+  UefiLib
+  UefiDriverEntryPoint
+
+[Pcd]
+#  gBaikalTokenSpaceGuid.PcdPciEXhci
+#  gBaikalTokenSpaceGuid.PcdPciEAhci
+#  gBaikalTokenSpaceGuid.PcdPciESdhci
+
+[Depex]
+  TRUE

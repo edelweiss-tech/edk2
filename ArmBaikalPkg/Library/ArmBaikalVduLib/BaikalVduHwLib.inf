@@ -1,0 +1,45 @@
+#/** @file
+#
+#  Component description file for BaikalVduHwLib module
+#
+# Copyright (C) 2020 Baikal Electronics JSC
+#
+# Author: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaikalVdu
+  FILE_GUID                      = 186FDA79-A209-48F1-9318-2EA0DD682E9D
+  MODULE_TYPE                    = BASE
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = LcdHwLib
+
+[Sources.common]
+  BaikalVdu.h
+  BaikalVdu.c
+  BaikalHdmi.h
+
+[Packages]
+  ArmBaikalPkg/ArmBaikalPkg.dec
+  ArmPkg/ArmPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  UefiLib
+  BaseLib
+  ArmSmcLib
+  DebugLib
+  IoLib
+  TimerLib
+
+[Pcd]
+  gArmBaikalTokenSpaceGuid.PcdVduBase
+  gArmBaikalTokenSpaceGuid.PcdVduLcruId
+
+[FixedPcd]
+  gArmBaikalTokenSpaceGuid.PcdHdmiBase

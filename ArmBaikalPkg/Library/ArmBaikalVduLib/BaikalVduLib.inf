@@ -1,0 +1,45 @@
+#/** @file
+#
+#  Component description file for BaikalVduLib module
+#
+# Copyright (C) 2020 Baikal Electronics JSC
+#
+# Author: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+#
+#**/
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = BaikalVduLib
+  FILE_GUID                      = EBE4F9BA-18AE-4DC7-BA8C-258D8168AE49
+  MODULE_TYPE                    = BASE 
+  VERSION_STRING                 = 1.0
+  LIBRARY_CLASS                  = LcdPlatformLib
+
+[Sources.common]
+  BaikalVduPlatform.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  ArmPkg/ArmPkg.dec
+  ArmBaikalPkg/ArmBaikalPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+
+[Protocols]
+  gEfiEdidDiscoveredProtocolGuid                # Produced
+  gEfiEdidActiveProtocolGuid                    # Produced
+
+[Pcd]
+  gArmBaikalTokenSpaceGuid.PcdVduLcruId
+  gArmBaikalTokenSpaceGuid.PcdVduBase
+
+[FixedPcd]
+  gArmBaikalTokenSpaceGuid.PcdVduMaxMode
+  gArmBaikalTokenSpaceGuid.PcdGopPixelFormat
+  gArmBaikalTokenSpaceGuid.PcdHdmiRefFrequency
+  gArmBaikalTokenSpaceGuid.PcdLvdsRefFrequency

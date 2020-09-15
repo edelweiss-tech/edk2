@@ -1,0 +1,37 @@
+## @file
+#  INF file for the Baikal-M Network Controller Driver.
+#  Copyright (c) 2019-2020 Baikal Electronics JSC (www.baikalelectronics.ru)
+##
+
+[Defines]
+  INF_VERSION    = 0x00010019
+  BASE_NAME      = BaikalEthDxe
+  FILE_GUID      = f3a824d7-8caf-4807-bfda-a8e5312486ab
+  MODULE_TYPE    = DXE_DRIVER
+  VERSION_STRING = 1.0
+  ENTRY_POINT    = BaikalEthDxeDriverEntry
+
+[Sources.common]
+  BaikalEth.c
+  BaikalEthGmacDescs.h
+  BaikalEthGmacRegs.h
+  BaikalEthSnp.c
+  BaikalEthSnp.h
+
+[Packages]
+  ArmBaikalPkg/ArmBaikalPkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  BaikalFruLib
+  BaikalI2cLib
+  UefiDriverEntryPoint
+  UefiLib
+
+[Protocols]
+  gEfiSimpleNetworkProtocolGuid
+  gFdtClientProtocolGuid
+
+[Depex]
+  TRUE

@@ -1,0 +1,55 @@
+#################################################################
+ How to build and run the UEFI for baikal-m.
+#################################################################
+ Copyright (C) 2015 Baikal Electronics.
+
+ Author: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+#################################################################
+
+=================================================================
+ Prepare host.
+=================================================================
+
+1) Several packages will be needed to fully set up an edk2 build environment: 
+
+bash$ sudo apt-get install build-essential uuid-dev texinfo \
+        bison flex libgmp3-dev libmpfr-dev subversion
+
+
+2) Build the Intel ASL (iasl) compiler
+
+First, download the latest ACPI-CA release from http://www.acpica.org. 
+
+bash$ cd ~/src
+bash$ wget http://www.acpica.org/download/acpica-unix-20090521.tar.gz
+bash$ tar -zxf acpica-unix-20090521.tar.gz
+bash$ make -C acpica-unix-20090521/compiler
+bash$ ln -s ~/src/acpica-unix-20090521/compiler/iasl ~/programs/iasl
+
+
+Refer to the following link for details:
+
+https://github.com/tianocore/tianocore.github.io/wiki/Unix-like-systems
+
+
+
+=================================================================
+ Build and run UEFI.
+=================================================================
+
+1) Build the EDK II BaseTools
+
+cd <path_to_uefi>
+./baikal_edk2.sh
+
+2) Edit <path_to_uefi>/baikal_start.sh to specify CROSS_COMPILE
+
+3) Setup build shell environment
+
+cd <path_to_uefi>
+. ./baikal_start.sh 
+
+4) Build UEFI
+
+build -p ArmBaikalPkg/ArmBaikalQemuKernel.dsc
+

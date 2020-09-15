@@ -1,0 +1,14 @@
+##  @file
+#  This is the Linux application binary file.
+#
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010006
+  BASE_NAME                      = Linux 
+  FILE_GUID                      = 1e22b271-0cb3-44f7-b22e-1ef04100940d 
+  MODULE_TYPE                    = UEFI_APPLICATION
+  VERSION_STRING                 = 1.0
+
+[Binaries.AArch64]
+  PE32|AArch64/linux.efi|*
