@@ -81,7 +81,13 @@ READ_LOCK_STATUS   = TRUE
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
   INF ArmBaikalPkg/Drivers/BaikalSpiFvDxe/BaikalSpiFvDxe.inf
   INF ArmBaikalPkg/Drivers/BaikalSpiBlockDxe/BaikalSpiBlockDxe.inf
+!if $(BE_MITX) == TRUE
+  INF ArmBaikalPkg/Drivers/BaikalI2cDxe/BaikalI2cDxe.inf
+  INF ArmBaikalPkg/Drivers/I2cDevicesDxe/I2cDevicesDxe.inf
+  INF MdeModulePkg/Bus/I2c/I2cDxe/I2cDxe.inf
+!else
   INF ArmBaikalPkg/Drivers/BaikalRtcDxe/BaikalRtcDxe.inf
+!endif
   INF ArmBaikalPkg/Drivers/BaikalEthDxe/BaikalEthDxe.inf
   # INF ArmBaikalPkg/Drivers/BaikalRamDiskDxe/BaikalRamDiskDxe.inf
   INF MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf

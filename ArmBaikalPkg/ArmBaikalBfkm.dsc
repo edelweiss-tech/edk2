@@ -319,7 +319,12 @@
 
   # ArmBaikalPkg/Drivers/BaikalRamDiskDxe/BaikalRamDiskDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
+!if $(BE_MITX) == TRUE
+  ArmBaikalPkg/Drivers/BaikalI2cDxe/BaikalI2cDxe.inf
+  ArmBaikalPkg/Drivers/I2cDevicesDxe/I2cDevicesDxe.inf
+!else
   ArmBaikalPkg/Drivers/BaikalRtcDxe/BaikalRtcDxe.inf
+!endif
   ArmBaikalPkg/Drivers/BaikalEthDxe/BaikalEthDxe.inf
 
   #
@@ -332,6 +337,13 @@
   #OvmfPkg/VirtioScsiDxe/VirtioScsi.inf
   #OvmfPkg/VirtioNetDxe/VirtioNet.inf
   #OvmfPkg/VirtioRngDxe/VirtioRng.inf
+
+!if $(BE_MITX) == TRUE
+  #
+  # I2C Support
+  #
+  MdeModulePkg/Bus/I2c/I2cDxe/I2cDxe.inf
+!endif
 
   #
   # FAT filesystem + GPT/MBR partitioning + UDF filesystem
