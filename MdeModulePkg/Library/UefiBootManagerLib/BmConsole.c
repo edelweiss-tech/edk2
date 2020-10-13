@@ -603,12 +603,7 @@ EfiBootManagerConnectConsoleVariable (
       } else {
         Status = EfiBootManagerConnectDevicePath (Instance, NULL);
       }
-      if (EFI_ERROR (Status)) {
-        //
-        // Delete the instance from the console varialbe
-        //
-        EfiBootManagerUpdateConsoleVariable (ConsoleType, NULL, Instance);
-      } else {
+      if (!EFI_ERROR (Status)) {
         DeviceExist = TRUE;
       }
     }
