@@ -322,6 +322,7 @@
 !if $(BE_MITX) == TRUE
   ArmBaikalPkg/Drivers/BaikalI2cDxe/BaikalI2cDxe.inf
   ArmBaikalPkg/Drivers/I2cDevicesDxe/I2cDevicesDxe.inf
+  ArmBaikalPkg/Drivers/Pcf2127RtcDxe/Pcf2127RtcDxe.inf
 !else
   ArmBaikalPkg/Drivers/BaikalRtcDxe/BaikalRtcDxe.inf
 !endif
