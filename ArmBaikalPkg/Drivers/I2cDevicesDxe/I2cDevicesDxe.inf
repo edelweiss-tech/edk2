@@ -43,6 +43,7 @@
 [Guids]
   gFdtHobGuid
   gArmBaikalNonDiscoverableI2cMasterGuid
+  gTpBmcI2cDeviceGuid
   gPcf2127RtcI2cDeviceGuid
   gPs2MuxI2cDeviceGuid
 
