@@ -323,6 +323,7 @@
   ArmBaikalPkg/Drivers/BaikalI2cDxe/BaikalI2cDxe.inf
   ArmBaikalPkg/Drivers/I2cDevicesDxe/I2cDevicesDxe.inf
   ArmBaikalPkg/Drivers/Pcf2127RtcDxe/Pcf2127RtcDxe.inf
+  ArmBaikalPkg/Drivers/Ps2MuxDxe/Ps2MuxDxe.inf
 !else
   ArmBaikalPkg/Drivers/BaikalRtcDxe/BaikalRtcDxe.inf
 !endif

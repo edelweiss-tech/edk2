@@ -86,6 +86,7 @@ READ_LOCK_STATUS   = TRUE
   INF ArmBaikalPkg/Drivers/I2cDevicesDxe/I2cDevicesDxe.inf
   INF MdeModulePkg/Bus/I2c/I2cDxe/I2cDxe.inf
   INF ArmBaikalPkg/Drivers/Pcf2127RtcDxe/Pcf2127RtcDxe.inf
+  INF ArmBaikalPkg/Drivers/Ps2MuxDxe/Ps2MuxDxe.inf
 !else
   INF ArmBaikalPkg/Drivers/BaikalRtcDxe/BaikalRtcDxe.inf
 !endif
