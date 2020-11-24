@@ -157,14 +157,12 @@ READ_LOCK_STATUS   = TRUE
 
   INF MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
   INF MdeModulePkg/Bus/Ata/AtaBusDxe/AtaBusDxe.inf
-  # - INF MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
-  # - INF MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
   INF MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
   INF MdeModulePkg/Bus/Pci/NonDiscoverablePciDeviceDxe/NonDiscoverablePciDeviceDxe.inf
   INF ArmBaikalPkg/Drivers/PciEmulation/PciEmulation.inf
 
-  #  INF MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
-  #  INF MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
+  INF MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
+  INF MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
 
   #
   # SMBIOS Support
