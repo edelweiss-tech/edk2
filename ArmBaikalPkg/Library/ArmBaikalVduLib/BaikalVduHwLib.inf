@@ -22,6 +22,7 @@
   BaikalVdu.h
   BaikalVdu.c
   BaikalHdmi.h
+  BaikalHdmi.c
 
 [Packages]
   ArmBaikalPkg/ArmBaikalPkg.dec
@@ -37,9 +38,9 @@
   IoLib
   TimerLib
 
-[Pcd]
-  gArmBaikalTokenSpaceGuid.PcdVduBase
-  gArmBaikalTokenSpaceGuid.PcdVduLcruId
+#[Pcd]
+#  gArmBaikalTokenSpaceGuid.PcdVduBase
+#  gArmBaikalTokenSpaceGuid.PcdVduLcruId
 
 [FixedPcd]
   gArmBaikalTokenSpaceGuid.PcdHdmiBase

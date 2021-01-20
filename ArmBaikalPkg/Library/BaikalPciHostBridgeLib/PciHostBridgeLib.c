@@ -1,5 +1,7 @@
-// Copyright (c) 2020 Baikal Electronics JSC
-// Author: Mikhail Ivanov <michail.ivanov@baikalelectronics.ru>
+/** @file
+  Copyright (c) 2020, Baikal Electronics, JSC. All rights reserved.<BR>
+  SPDX-License-Identifier: BSD-2-Clause-Patent
+**/
 
 #include <Library/DebugLib.h>
 #include <Library/MemoryAllocationLib.h>

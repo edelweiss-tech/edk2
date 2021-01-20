@@ -28,5 +28,4 @@
   UefiBootServicesTableLib
   UefiRuntimeLib
   DxeServicesTableLib
-  SpiLib
   ArmSmcLib

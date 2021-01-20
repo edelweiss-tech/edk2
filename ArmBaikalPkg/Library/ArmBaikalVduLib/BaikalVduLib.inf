@@ -33,6 +33,7 @@
 [Protocols]
   gEfiEdidDiscoveredProtocolGuid                # Produced
   gEfiEdidActiveProtocolGuid                    # Produced
+  gFdtClientProtocolGuid                        # Consumes
 
 [Pcd]
   gArmBaikalTokenSpaceGuid.PcdVduLcruId

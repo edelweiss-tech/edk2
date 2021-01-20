@@ -124,6 +124,30 @@ FindNextCompatibleNode (
 STATIC
 EFI_STATUS
 EFIAPI
+FindNextSubnode (
+  IN  FDT_CLIENT_PROTOCOL     *This,
+  IN  CONST CHAR8             *SubnodeString,
+  IN  INT32                   PrevSubnode,
+  OUT INT32                   *Subnode
+  )
+{
+  INT32  Next;
+
+  ASSERT (mDeviceTreeBase != NULL);
+  ASSERT (Subnode != NULL);
+
+  Next = fdt_subnode_offset (mDeviceTreeBase, PrevSubnode, SubnodeString);
+  if (Next < 0) {
+    return EFI_NOT_FOUND;
+  }
+
+  *Subnode = Next;
+  return EFI_SUCCESS;
+}
+
+STATIC
+EFI_STATUS
+EFIAPI
 FindCompatibleNode (
   IN  FDT_CLIENT_PROTOCOL     *This,
   IN  CONST CHAR8             *CompatibleString,
@@ -308,6 +332,7 @@ STATIC FDT_CLIENT_PROTOCOL mFdtClientProtocol = {
   SetNodeProperty,
   FindCompatibleNode,
   FindNextCompatibleNode,
+  FindNextSubnode,
   FindCompatibleNodeProperty,
   FindCompatibleNodeReg,
   FindMemoryNodeReg,

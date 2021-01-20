@@ -19,7 +19,7 @@
 
 #include <Protocol/GraphicsOutput.h>
 
-#define LCD_VRAM_SIZE                     SIZE_8MB
+#define LCD_VRAM_SIZE                     SIZE_16MB
 
 // Modes definitions
 #define VGA                               0
@@ -31,18 +31,19 @@
 #define WSXGA                             6
 #define UXGA                              7
 #define HD                                8
+#define QHD                               9
 
 // VGA Mode: 640 x 480 @ 60
 #define VGA_H_RES_PIXELS                  640
 #define VGA_V_RES_PIXELS                  480
-#define VGA_OSC_FREQUENCY                 25187500
+#define VGA_OSC_FREQUENCY                 24250000
 
-#define VGA_H_SYNC                        96
 #define VGA_H_FRONT_PORCH                 16
+#define VGA_H_SYNC                        96
 #define VGA_H_BACK_PORCH                  48
 
-#define VGA_V_SYNC                        2
 #define VGA_V_FRONT_PORCH                 10
+#define VGA_V_SYNC                        2
 #define VGA_V_BACK_PORCH                  33
 
 #define VGA_OPMODE                        0x00b3
@@ -57,12 +58,12 @@
 #define SVGA_V_RES_PIXELS                 600
 #define SVGA_OSC_FREQUENCY                40000000
 
-#define SVGA_H_SYNC                       128
 #define SVGA_H_FRONT_PORCH                40
+#define SVGA_H_SYNC                       128
 #define SVGA_H_BACK_PORCH                 88
 
-#define SVGA_V_SYNC                       4
 #define SVGA_V_FRONT_PORCH                1
+#define SVGA_V_SYNC                       4
 #define SVGA_V_BACK_PORCH                 23
 
 #define SVGA_OPMODE                       0x00b3
@@ -77,12 +78,12 @@
 #define XGA_V_RES_PIXELS                  768
 #define XGA_OSC_FREQUENCY                 65000000
 
-#define XGA_H_SYNC                        24
-#define XGA_H_FRONT_PORCH                 136
+#define XGA_H_FRONT_PORCH                 24 
+#define XGA_H_SYNC                        136
 #define XGA_H_BACK_PORCH                  160
 
-#define XGA_V_SYNC                        3
-#define XGA_V_FRONT_PORCH                 6
+#define XGA_V_FRONT_PORCH                 3
+#define XGA_V_SYNC                        6
 #define XGA_V_BACK_PORCH                  29
 
 #define XGA_OPMODE                        0x0072
@@ -97,8 +98,8 @@
 #define HD720_V_RES_PIXELS                720
 #define HD720_OSC_FREQUENCY               74250000
 
-#define HD720_H_SYNC                      110
-#define HD720_H_FRONT_PORCH               40
+#define HD720_H_FRONT_PORCH               110
+#define HD720_H_SYNC                      40
 #define HD720_H_BACK_PORCH                220
 
 #define HD720_V_SYNC                      5
@@ -117,12 +118,12 @@
 #define WXGA_V_RES_PIXELS                 800
 #define WXGA_OSC_FREQUENCY                71000000
 
-#define WXGA_H_SYNC                       48
-#define WXGA_H_FRONT_PORCH                32
+#define WXGA_H_FRONT_PORCH                48
+#define WXGA_H_SYNC                       32
 #define WXGA_H_BACK_PORCH                 80
 
-#define WXGA_V_SYNC                       3
-#define WXGA_V_FRONT_PORCH                6
+#define WXGA_V_FRONT_PORCH                3
+#define WXGA_V_SYNC                       6
 #define WXGA_V_BACK_PORCH                 14
 
 #define WXGA_OPMODE                       0x0072
@@ -137,13 +138,13 @@
 #define SXGA_V_RES_PIXELS                 1024
 #define SXGA_OSC_FREQUENCY                108000000
 
-#define SXGA_H_SYNC                       48
-#define SXGA_H_FRONT_PORCH                112
+#define SXGA_H_FRONT_PORCH                48
+#define SXGA_H_SYNC                       112
 #define SXGA_H_BACK_PORCH                 248
 
-#define SXGA_V_SYNC                       1
-#define SXGA_V_FRONT_PORCH                3
-#define SXGA_V_BACK_PORCH                 28
+#define SXGA_V_FRONT_PORCH                1
+#define SXGA_V_SYNC                       3
+#define SXGA_V_BACK_PORCH                 38
 
 #define SXGA_OPMODE                       0x0051
 #define SXGA_CURRENT                      0x001b
@@ -157,12 +158,12 @@
 #define WSXGA_V_RES_PIXELS                1050
 #define WSXGA_OSC_FREQUENCY               119000000
 
-#define WSXGA_H_SYNC                      48
-#define WSXGA_H_FRONT_PORCH               32
+#define WSXGA_H_FRONT_PORCH               48
+#define WSXGA_H_SYNC                      32
 #define WSXGA_H_BACK_PORCH                80
 
-#define WSXGA_V_SYNC                      3
-#define WSXGA_V_FRONT_PORCH               6
+#define WSXGA_V_FRONT_PORCH               3
+#define WSXGA_V_SYNC                      6
 #define WSXGA_V_BACK_PORCH                21
 
 #define WSXGA_OPMODE                      0x0051
@@ -177,12 +178,12 @@
 #define UXGA_V_RES_PIXELS                 1200
 #define UXGA_OSC_FREQUENCY                162000000
 
-#define UXGA_H_SYNC                       64
-#define UXGA_H_FRONT_PORCH                192
+#define UXGA_H_FRONT_PORCH                64
+#define UXGA_H_SYNC                       192
 #define UXGA_H_BACK_PORCH                 304
 
-#define UXGA_V_SYNC                       1
-#define UXGA_V_FRONT_PORCH                3
+#define UXGA_V_FRONT_PORCH                1
+#define UXGA_V_SYNC                       3
 #define UXGA_V_BACK_PORCH                 46
 
 #define UXGA_OPMODE                       0x0051
@@ -197,12 +198,12 @@
 #define HD_V_RES_PIXELS                   1080
 #define HD_OSC_FREQUENCY                  148500000
 
-#define HD_H_SYNC                         88
-#define HD_H_FRONT_PORCH                  44
+#define HD_H_FRONT_PORCH                  88
+#define HD_H_SYNC                         44
 #define HD_H_BACK_PORCH                   148
 
-#define HD_V_SYNC                         4
-#define HD_V_FRONT_PORCH                  5
+#define HD_V_FRONT_PORCH                  4
+#define HD_V_SYNC                         5
 #define HD_V_BACK_PORCH                   36
 
 #define HD_OPMODE                         0x0051
@@ -211,6 +212,27 @@
 #define HD_TXTER                          0x0004
 #define HD_VLEVCTRL                       0x0230
 #define HD_CKSYMTXCTRL                    0x8009
+
+// QHD Mode: 2560 x 1440 @ 60
+#define QHD_H_RES_PIXELS                  2560
+#define QHD_V_RES_PIXELS                  1440
+#define QHD_OSC_FREQUENCY                 242000000
+
+#define QHD_H_FRONT_PORCH                 48
+#define QHD_H_SYNC                        32
+#define QHD_H_BACK_PORCH                  80
+
+#define QHD_V_FRONT_PORCH                 3
+#define QHD_V_SYNC                        5
+#define QHD_V_BACK_PORCH                  33
+
+#define QHD_OPMODE                        0x0040
+#define QHD_CURRENT                       0x0036
+#define QHD_GMP                           0x0003
+#define QHD_TXTER                         0x0004
+#define QHD_VLEVCTRL                      0x0273
+#define QHD_CKSYMTXCTRL                   0x8009
+
 
 // Possible bits per pixel variants.
 typedef enum {
@@ -362,6 +384,25 @@ EFI_STATUS
 LcdPlatformGetBpp (
   IN  UINT32                                ModeNumber,
   OUT LCD_BPP*                              Bpp
+  );
+
+/** Return LVDS related information for a mode number.
+
+  @param[in]  ModeNumber          Mode Number.
+
+  @param[out] LvdsPorts           Pointer to LVDS ports (1, 2 or 4 supported)
+
+  @param[out] LvdsOutBpp          Pointer to LVDS format (18 - jeida-18, 24 - vesa-24)
+
+  @retval EFI_SUCCESS             Bits per pixel information for the requested
+                                  mode returned successfully.
+  @retval EFI_INVALID_PARAMETER   Requested mode not found.
+**/
+EFI_STATUS
+LcdPlatformGetLvdsInfo (
+  IN  UINT32                              ModeNumber,
+  OUT UINT32  *                           LvdsPorts,
+  OUT UINT32  *                           LvdsOutBpp
   );
 
 #endif /* BAIKAL_VDU_PLATFORM_LIB_H_ */

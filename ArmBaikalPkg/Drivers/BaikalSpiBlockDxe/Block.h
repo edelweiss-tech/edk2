@@ -4,9 +4,7 @@
 
   #define BAIKAL_SPI_PRIVATE_DATA_SIGNATURE     SIGNATURE_32 ('B', 'S', 'P', 'I')
   #define BAIKAL_SPI_PRIVATE_FROM_BLKIO(a)      CR (a, BAIKAL_SPI_PRIVATE_DATA, BlockIo, BAIKAL_SPI_PRIVATE_DATA_SIGNATURE)
-  #define SPI_DISK_BLOCK_SIZE 512
-  #define UEFI_BLOCK_OFFSET  (8*1024*1024)
-  #define UEFI_BLOCK_SIZE    (8*1024*1024)
+  #define FAT_BLOCK_SIZE                        512
 
   typedef struct {
       VENDOR_DEVICE_PATH                  Vendor;

@@ -66,6 +66,15 @@ EFI_STATUS
 
 typedef
 EFI_STATUS
+(EFIAPI *FDT_CLIENT_FIND_NEXT_SUBNODE) (
+  IN  FDT_CLIENT_PROTOCOL     *This,
+  IN  CONST CHAR8             *SubnodeString,
+  IN  INT32                   PrevSubnode,
+  OUT INT32                   *Subnode
+  );
+
+typedef
+EFI_STATUS
 (EFIAPI *FDT_CLIENT_FIND_COMPATIBLE_NODE_PROPERTY) (
   IN  FDT_CLIENT_PROTOCOL     *This,
   IN  CONST CHAR8             *CompatibleString,
@@ -121,6 +130,7 @@ struct _FDT_CLIENT_PROTOCOL {
 
   FDT_CLIENT_FIND_COMPATIBLE_NODE          FindCompatibleNode;
   FDT_CLIENT_FIND_NEXT_COMPATIBLE_NODE     FindNextCompatibleNode;
+  FDT_CLIENT_FIND_NEXT_SUBNODE             FindNextSubnode;
   FDT_CLIENT_FIND_COMPATIBLE_NODE_PROPERTY FindCompatibleNodeProperty;
   FDT_CLIENT_FIND_COMPATIBLE_NODE_REG      FindCompatibleNodeReg;
 

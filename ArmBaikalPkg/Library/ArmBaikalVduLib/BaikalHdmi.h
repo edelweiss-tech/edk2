@@ -4,11 +4,6 @@
 
  Author: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
 
- Parts of this file were based on sources as follows:
-
- Copyright (c) 2011, ARM Ltd. All rights reserved.<BR>
- SPDX-License-Identifier: BSD-2-Clause-Patent
-
  **/
 
 #ifndef _BAIKAL_HDMI_H__
@@ -150,5 +145,21 @@ enum {
     BAIKAL_HDMI_MC_HEACPHY_RST_DEASSERT = 0x0,
 
 };
+
+VOID
+HdmiInitAvComposer(
+  IN SCAN_TIMINGS *Horizontal,
+  IN SCAN_TIMINGS *Vertical
+  );
+
+EFI_STATUS
+HdmiPhyInit(
+  IN HDMI_PHY_SETTINGS *PhySettings
+  );
+
+VOID
+HdmiEnableVideoPath(
+  UINT32 Sync
+  );
 
 #endif /* _BAIKAL_HDMI_H__ */

@@ -24,17 +24,22 @@ typedef enum {
 #define ASSERT_INVALID_PCI_SEGMENT_ADDRESS(A,M) \
   ASSERT (((A) & (0xffff0000f0000000ULL | (M))) == 0)
 
-#define BEM1000_PCIE_PF0_PORT_LOGIC_IATU_REGION_CTRL_1_OFF_OUTBOUND_0_TYPE_CFG0  4
+#define BM1000_PCIE_PF0_PORT_LOGIC_IATU_REGION_CTRL_1_OFF_OUTBOUND_0_TYPE_CFG0  4
 
 VOID
 BaikalPciHostBridgeLibCfgWindow (
   IN  EFI_PHYSICAL_ADDRESS  PcieCdmBase,
-  IN  UINTN                 Idx,
+  IN  UINTN                 RegionIdx,
   IN  UINT64                CpuBase,
   IN  UINT64                PciBase,
   IN  UINT64                Size,
   IN  UINTN                 Type,
   IN  UINTN                 EnableFlags
+  );
+
+BOOLEAN
+BaikalPciHostBridgeLibLink (
+  IN  CONST UINTN  PcieIdx
   );
 
 STATIC
@@ -59,13 +64,17 @@ PciSegmentLibGetConfigBase (
     return mPcieCdmBases[Segment];
   }
 
+  if (!BaikalPciHostBridgeLibLink(Segment)) {
+    return MAX_UINT64;
+  }
+
   BaikalPciHostBridgeLibCfgWindow (
     mPcieCdmBases[Segment],
     1,
     mPcieCfgBases[Segment],
     (Bus << 24) | (Device << 19) | (Function << 16),
     SIZE_64KB,
-    BEM1000_PCIE_PF0_PORT_LOGIC_IATU_REGION_CTRL_1_OFF_OUTBOUND_0_TYPE_CFG0,
+    BM1000_PCIE_PF0_PORT_LOGIC_IATU_REGION_CTRL_1_OFF_OUTBOUND_0_TYPE_CFG0,
     0
     );
 

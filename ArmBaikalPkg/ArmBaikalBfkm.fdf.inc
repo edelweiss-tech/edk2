@@ -186,6 +186,11 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
 
   #
+  # NVMe
+  #
+  INF MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+
+  #
   # Video support
   #
   # INF OvmfPkg/VirtioGpuDxe/VirtioGpu.inf

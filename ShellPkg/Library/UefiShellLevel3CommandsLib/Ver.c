@@ -120,7 +120,6 @@ ShellCommandRunVer (
             (CHAR16 *) PcdGetPtr (PcdShellSupplier)
            );
 
-
           ShellPrintHiiEx (
             -1,
             -1,
@@ -132,6 +131,15 @@ ShellCommandRunVer (
             gST->FirmwareVendor,
             gST->FirmwareRevision
            );
+
+          ShellPrintHiiEx (
+            -1,
+            -1,
+            NULL,
+            STRING_TOKEN (STR_VER_OUTPUT_SDK_BM),
+            gShellLevel3HiiHandle
+           );
+
         }
       }
       //

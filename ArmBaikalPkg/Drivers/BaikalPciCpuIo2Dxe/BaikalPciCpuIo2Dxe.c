@@ -332,9 +332,9 @@ TranslateIoAddress (
   IN OUT EFI_PHYSICAL_ADDRESS *CONST  Address
   )
 {
-  STATIC CONST EFI_PHYSICAL_ADDRESS  PciePortIoBases[] = BEM1000_PCIE_PORTIO_BASES;
-  STATIC CONST UINTN                 PciePortIoMins[]  = BEM1000_PCIE_PORTIO_MINS;
-  STATIC CONST UINTN                 PciePortIoMaxs[]  = BEM1000_PCIE_PORTIO_MAXS;
+  STATIC CONST EFI_PHYSICAL_ADDRESS  PciePortIoBases[] = BM1000_PCIE_PORTIO_BASES;
+  STATIC CONST UINTN                 PciePortIoMins[]  = BM1000_PCIE_PORTIO_MINS;
+  STATIC CONST UINTN                 PciePortIoMaxs[]  = BM1000_PCIE_PORTIO_MAXS;
   UINTN  Segment;
 
   for (Segment = 0; Segment < ARRAY_SIZE (PciePortIoBases); ++Segment) {

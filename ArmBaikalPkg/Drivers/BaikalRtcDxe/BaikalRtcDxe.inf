@@ -7,7 +7,7 @@
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = RealTimeClock
   FILE_GUID                      = 8378036f-4368-4777-845b-298de3310ba1
-  MODULE_TYPE                    = DXE_DRIVER
+  MODULE_TYPE                    = DXE_RUNTIME_DRIVER
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = InitializeRealTimeClock
 
@@ -23,6 +23,7 @@
 [LibraryClasses]
   UefiBootServicesTableLib
   UefiDriverEntryPoint
+  UefiRuntimeLib
   DebugLib
 
 [Protocols]

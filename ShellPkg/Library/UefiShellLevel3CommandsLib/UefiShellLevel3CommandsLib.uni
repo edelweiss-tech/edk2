@@ -55,6 +55,7 @@
 #string STR_VER_OUTPUT_SIMPLE     #language en-US "%d.%d\r\n"
 #string STR_VER_OUTPUT_UEFI       #language en-US "UEFI v%d.%02d (%s, 0x%08x)\r\n"
 #string STR_VER_OUTPUT_SUPPLIER   #language en-US "%s\r\n"
+#string STR_VER_OUTPUT_SDK_BM     #language en-US "SDK-BM v4.4\r\n"
 
 #string STR_ECHO_ON               #language en-US "Echo is on.\r\n"
 #string STR_ECHO_OFF              #language en-US "Echo is off.\r\n"

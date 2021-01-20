@@ -34,6 +34,7 @@ SECTIONS
   .note (INFO) : { *(.note.gnu.build-id) }
 
   /DISCARD/ : {
+    *(.eh_frame)
     *(.note.GNU-stack)
     *(.gnu.hash)
     *(.gnu_debuglink)

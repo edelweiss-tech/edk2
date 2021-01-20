@@ -15,7 +15,7 @@
 [Defines]
   INF_VERSION                    = 0x00010005
   BASE_NAME                      = BaikalSpiBlockDxe
-  FILE_GUID                      = 0cc69cbe-4444-ABCD-8f41-26cdbc29acb5
+  FILE_GUID                      = 056f5434-d13c-45a1-a784-513b959037d2
   MODULE_TYPE                    = DXE_RUNTIME_DRIVER
   VERSION_STRING                 = 1.0
   ENTRY_POINT                    = BaikalSpiBlockDxeInitialize
@@ -23,7 +23,6 @@
 [Sources]
   Block.c
   Block.h
-  # Debug.h
 
 [Packages]
   ArmPkg/ArmPkg.dec
@@ -40,7 +39,6 @@
   UefiBootServicesTableLib
   UefiRuntimeLib
   DxeServicesTableLib
-  SpiLib
   BaikalSmcLib
 
 [FixedPcd]
@@ -57,8 +55,8 @@
   gEfiMdeModulePkgTokenSpaceGuid.PcdFlashNvStorageFtwSpareBase
 
 [Protocols]
-  gEfiFirmwareVolumeBlockProtocolGuid            ## PRODUCES
-  gEfiBlockIoProtocolGuid                        ## PRODUCE
+  gEfiFirmwareVolumeBlockProtocolGuid
+  gEfiBlockIoProtocolGuid
   gEfiDevicePathProtocolGuid
 
 [Guids]

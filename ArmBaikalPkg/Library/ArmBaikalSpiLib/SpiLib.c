@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <Library/BaikalDebug.h>
+#include <Platform/BaikalFlashMap.h>
 #include <Library/BaikalSpiLib.h>
 #include "Spi.h"
 
@@ -467,44 +468,70 @@ int llenv32_exit_4byte (int port, int line)
 
 static const flash_info_t spi_nor_ids[] = {
 
-    /* Atmel -- some are (confusingly) marketed as "DataFlash" */
+    /* Atmel */
     { "at25fs010",   INFO(0x1f6601,  32*1024,    4) },
     { "at25fs040",   INFO(0x1f6604,  64*1024,    8) },
     { "at25df041a",  INFO(0x1f4401,  64*1024,    8) },
+    { "at25df321",   INFO(0x1f4700,  64*1024,   64) },
     { "at25df321a",  INFO(0x1f4701,  64*1024,   64) },
     { "at25df641",   INFO(0x1f4800,  64*1024,  128) },
+    { "at25sl321",   INFO(0x1f4216,  64*1024,   64) },
     { "at26f004",    INFO(0x1f0400,  64*1024,    8) },
     { "at26df081a",  INFO(0x1f4501,  64*1024,   16) },
     { "at26df161a",  INFO(0x1f4601,  64*1024,   32) },
     { "at26df321",   INFO(0x1f4700,  64*1024,   64) },
     { "at45db081d",  INFO(0x1f2500,  64*1024,   16) },
 
-    /* EON -- en25xxx */
+    /* EON */
     { "en25f32",     INFO(0x1c3116,  64*1024,   64) },
     { "en25p32",     INFO(0x1c2016,  64*1024,   64) },
     { "en25q32b",    INFO(0x1c3016,  64*1024,   64) },
     { "en25p64",     INFO(0x1c2017,  64*1024,  128) },
     { "en25q64",     INFO(0x1c3017,  64*1024,  128) },
+    { "en25q80a",    INFO(0x1c3014,  64*1024,   16) },
+    { "en25qh16",    INFO(0x1c7015,  64*1024,   32) },
+    { "en25qh32",    INFO(0x1c7016,  64*1024,   64) },
+    { "en25qh64",    INFO(0x1c7017,  64*1024,  128) },
     { "en25qh128",   INFO(0x1c7018,  64*1024,  256) },
     { "en25qh256",   INFO(0x1c7019,  64*1024,  512) },
     { "en25s64",     INFO(0x1c3817,  64*1024,  128) },
 
     /* ESMT */
     { "f25l32pa",    INFO(0x8c2016,  64*1024,   64) },
+    { "f25l32qa",    INFO(0x8c4116,  64*1024,   64) },
+    { "f25l64qa",    INFO(0x8c4117,  64*1024,  128) },
 
     /* GigaDevice */
+    { "gd25q16",     INFO(0xc84015,  64*1024,   32) },
     { "gd25q32",     INFO(0xc84016,  64*1024,   64) },
+    { "gd25lq32",    INFO(0xc86016,  64*1024,   64) },
     { "gd25q64",     INFO(0xc84017,  64*1024,  128) },
     { "gd25lq64c",   INFO(0xc86017,  64*1024,  128) },
+    { "gd25lq128d",  INFO(0xc86018,  64*1024,  256) },
     { "gd25q128",    INFO(0xc84018,  64*1024,  256) },
+    { "gd25q256",    INFO(0xc84019,  64*1024,  512) },
 
-    /* Intel/Numonyx -- xxxs33b */
+    /* Fujitsu */
+    { "mb85rs1mt",   INFO(0x047f27, 128*1024,    1) },
+
+    /* Intel/Numonyx */
     { "160s33b",     INFO(0x898911,  64*1024,   32) },
     { "320s33b",     INFO(0x898912,  64*1024,   64) },
     { "640s33b",     INFO(0x898913,  64*1024,  128) },
 
     /* ISSI */
     { "is25cd512",   INFO(0x7f9d20,  32*1024,    2) },
+    { "is25lq040b",  INFO(0x9d4013,  64*1024,    8) },
+    { "is25lp016d",  INFO(0x9d6015,  64*1024,   32) },
+    { "is25lp080d",  INFO(0x9d6014,  64*1024,   16) },
+    { "is25lp032",   INFO(0x9d6016,  64*1024,   64) },
+    { "is25lp064",   INFO(0x9d6017,  64*1024,  128) },
+    { "is25lp128",   INFO(0x9d6018,  64*1024,  256) },
+    { "is25lp256",   INFO(0x9d6019,  64*1024,  512) },
+    { "is25wp032",   INFO(0x9d7016,  64*1024,   64) },
+    { "is25wp064",   INFO(0x9d7017,  64*1024,  128) },
+    { "is25wp128",   INFO(0x9d7018,  64*1024,  256) },
+    { "is25wp256",   INFO(0x9d7019,  64*1024,  512) },
 
     /* Macronix */
     { "mx25l512e",   INFO(0xc22010,  64*1024,    1) },
@@ -515,15 +542,30 @@ static const flash_info_t spi_nor_ids[] = {
     { "mx25l3205d",  INFO(0xc22016,  64*1024,   64) },
     { "mx25l3255e",  INFO(0xc29e16,  64*1024,   64) },
     { "mx25l6405d",  INFO(0xc22017,  64*1024,  128) },
+    { "mx25u2033e",  INFO(0xc22532,  64*1024,    4) },
+    { "mx25u3235f",  INFO(0xc22536,  64*1024,   64) },
+    { "mx25u4035",   INFO(0xc22533,  64*1024,    8) },
+    { "mx25u8035",   INFO(0xc22534,  64*1024,   16) },
     { "mx25u6435f",  INFO(0xc22537,  64*1024,  128) },
     { "mx25l12805d", INFO(0xc22018,  64*1024,  256) },
     { "mx25l12855e", INFO(0xc22618,  64*1024,  256) },
+    { "mx25r1635f",  INFO(0xc22815,  64*1024,   32) },
+    { "mx25r3235f",  INFO(0xc22816,  64*1024,   64) },
+    { "mx25u12835f", INFO(0xc22538,  64*1024,  256) },
     { "mx25l25635e", INFO(0xc22019,  64*1024,  512) },
+    { "mx25u25635f", INFO(0xc22539,  64*1024,  512) },
+    { "mx25u51245g", INFO(0xc2253a,  64*1024,  102) },
+    { "mx25v8035f",  INFO(0xc22314,  64*1024,   16) },
     { "mx25l25655e", INFO(0xc22619,  64*1024,  512) },
+    { "mx25l51245g", INFO(0xc2201a,  64*1024, 1024) },
     { "mx66l51235l", INFO(0xc2201a,  64*1024, 1024) },
+    { "mx66u51235f", INFO(0xc2253a,  64*1024, 1024) },
+    { "mx66l1g45g",  INFO(0xc2201b,  64*1024, 2048) },
     { "mx66l1g55g",  INFO(0xc2261b,  64*1024, 2048) },
+    { "mx66u2g45g",  INFO(0xc2253c,  64*1024, 4096) },
 
     /* Micron */
+    { "n25q016a",    INFO(0x20bb15,  64*1024,   32) },
     { "n25q032",     INFO(0x20ba16,  64*1024,   64) },
     { "n25q032a",    INFO(0x20bb16,  64*1024,   64) },
     { "n25q064",     INFO(0x20ba17,  64*1024,  128) },
@@ -532,16 +574,19 @@ static const flash_info_t spi_nor_ids[] = {
     { "n25q128a13",  INFO(0x20ba18,  64*1024,  256) },
     { "n25q256a",    INFO(0x20ba19,  64*1024,  512) },
     { "n25q512a",    INFO(0x20bb20,  64*1024, 1024) },
+    { "n25q256ax1",  INFO(0x20bb19,  64*1024,  512) },
     { "n25q512ax3",  INFO(0x20ba20,  64*1024, 1024) },
     { "n25q00",      INFO(0x20ba21,  64*1024, 2048) },
     { "n25q00a",     INFO(0x20bb21,  64*1024, 2048) },
+    { "mt25ql02g",   INFO(0x20ba22,  64*1024, 4096) },
+    { "mt25qu02g",   INFO(0x20bb22,  64*1024, 4096) },
+    { "mt35xu512aba",INFO(0x2c5b1a,  128*1024, 512) },
+    { "mt35xu02g",   INFO(0x2c5b1c,  128*1024,2048) },
 
     /* PMC */
-    { "pm25lv512",   INFO(0,         32*1024,    2) },
-    { "pm25lv010",   INFO(0,         32*1024,    4) },
     { "pm25lq032",   INFO(0x7f9d46,  64*1024,   64) },
 
-    /* SST -- large erase sizes are "overlays", "sectors" are 4K */
+    /* SST */
     { "sst25vf040b", INFO(0xbf258d,  64*1024,    8) },
     { "sst25vf080b", INFO(0xbf258e,  64*1024,   16) },
     { "sst25vf016b", INFO(0xbf2541,  64*1024,   32) },
@@ -554,8 +599,11 @@ static const flash_info_t spi_nor_ids[] = {
     { "sst25wf040b", INFO(0x621613,  64*1024,    8) },
     { "sst25wf040",  INFO(0xbf2504,  64*1024,    8) },
     { "sst25wf080",  INFO(0xbf2505,  64*1024,   16) },
+    { "sst26wf016b", INFO(0xbf2651,  64*1024,   32) },
+    { "sst26vf016b", INFO(0xbf2641,  64*1024,   32) },
+    { "sst26vf064b", INFO(0xbf2643,  64*1024,  128) },
 
-    /* ST Microelectronics -- newer production may have feature updates */
+    /* ST Microelectronics */
     { "m25p05",      INFO(0x202010,  32*1024,    2) },
     { "m25p10",      INFO(0x202011,  32*1024,    4) },
     { "m25p20",      INFO(0x202012,  64*1024,    4) },
@@ -565,15 +613,6 @@ static const flash_info_t spi_nor_ids[] = {
     { "m25p32",      INFO(0x202016,  64*1024,   64) },
     { "m25p64",      INFO(0x202017,  64*1024,  128) },
     { "m25p128",     INFO(0x202018, 256*1024,   64) },
-    { "m25p05-non",  INFO(       0,  32*1024,    2) },
-    { "m25p10-non",  INFO(       0,  32*1024,    4) },
-    { "m25p20-non",  INFO(       0,  64*1024,    4) },
-    { "m25p40-non",  INFO(       0,  64*1024,    8) },
-    { "m25p80-non",  INFO(       0,  64*1024,   16) },
-    { "m25p16-non",  INFO(       0,  64*1024,   32) },
-    { "m25p32-non",  INFO(       0,  64*1024,   64) },
-    { "m25p64-non",  INFO(       0,  64*1024,  128) },
-    { "m25p128-non", INFO(       0, 256*1024,   64) },
     { "m45pe10",     INFO(0x204011,  64*1024,    2) },
     { "m45pe80",     INFO(0x204014,  64*1024,   16) },
     { "m45pe16",     INFO(0x204015,  64*1024,   32) },
@@ -587,24 +626,36 @@ static const flash_info_t spi_nor_ids[] = {
     { "m25px64",     INFO(0x207117,  64*1024,  128) },
     { "m25px80",     INFO(0x207114,  64*1024,   16) },
 
-    /* Winbond -- w25x "blocks" are 64K, "sectors" are 4KiB */
+    /* Winbond */
     { "w25x05",      INFO(0xef3010,  64*1024,    1) },
     { "w25x10",      INFO(0xef3011,  64*1024,    2) },
     { "w25x20",      INFO(0xef3012,  64*1024,    4) },
     { "w25x40",      INFO(0xef3013,  64*1024,    8) },
     { "w25x80",      INFO(0xef3014,  64*1024,   16) },
     { "w25x16",      INFO(0xef3015,  64*1024,   32) },
+    { "w25q16dw",    INFO(0xef6015,  64*1024,   32) },
     { "w25x32",      INFO(0xef3016,  64*1024,   64) },
+    { "w25q20cl",    INFO(0xef4012,  64*1024,    4) },
+    { "w25q20bw",    INFO(0xef5012,  64*1024,    4) },
+    { "w25q20ew",    INFO(0xef6012,  64*1024,    4) },
     { "w25q32",      INFO(0xef4016,  64*1024,   64) },
     { "w25q32dw",    INFO(0xef6016,  64*1024,   64) },
+    { "w25q32jv",    INFO(0xef7016,  64*1024,   64) },
+    { "w25q32jwm",   INFO(0xef8016,  64*1024,   64) },
     { "w25x64",      INFO(0xef3017,  64*1024,  128) },
     { "w25q64",      INFO(0xef4017,  64*1024,  128) },
     { "w25q64dw",    INFO(0xef6017,  64*1024,  128) },
+    { "w25q64jvm",   INFO(0xef7017,  64*1024,  128) },
     { "w25q128fw",   INFO(0xef6018,  64*1024,  256) },
+    { "w25q128jv",   INFO(0xef7018,  64*1024,  256) },
     { "w25q80",      INFO(0xef5014,  64*1024,   16) },
     { "w25q80bl",    INFO(0xef4014,  64*1024,   16) },
     { "w25q128",     INFO(0xef4018,  64*1024,  256) },
     { "w25q256",     INFO(0xef4019,  64*1024,  512) },
+    { "w25q256jvm",  INFO(0xef7019,  64*1024,  512) },
+    { "w25q256jw",   INFO(0xef6019,  64*1024,  512) },
+    { "w25m512jv",   INFO(0xef7119,  64*1024, 1024) },
+    { "w25q16jv-im/jm", INFO(0xef7015, 64*1024,  32) },
 
     /* Spansion */
     { "s25sl004a",   INFO(0x010212,  64*1024,    8) },
@@ -620,6 +671,10 @@ static const flash_info_t spi_nor_ids[] = {
     { "s25fl132k",   INFO(0x014016,  64*1024,   64) },
     { "s25fl164k",   INFO(0x014017,  64*1024,  128) },
     { "s25fl204k",   INFO(0x014013,  64*1024,    8) },
+    { "s25fl208k",   INFO(0x014014,  64*1024,   16) },
+    { "s25fl064l",   INFO(0x016017,  64*1024,  128) },
+    { "s25fl128l",   INFO(0x016018,  64*1024,  256) },
+    { "s25fl256l",   INFO(0x016019,  64*1024,  512) },
 
     { },
 };
@@ -648,7 +703,7 @@ static const flash_info_t *get_info (int port, int line)
 
     // find
     int k;
-    for (k = 0; k < COUNTOF(spi_nor_ids) - 1; k++){
+    for (k = 0; k < sizeof(spi_nor_ids)/sizeof(spi_nor_ids[0]) -1; k++){
         info = &spi_nor_ids[k];
         if (!compare(info->id, id, SPI_NOR_MAX_ID_LEN)){
             // EARLY_PRINT("JEDEC id bytes: %02x%02x%02x\n", id[0], id[1], id[2]);

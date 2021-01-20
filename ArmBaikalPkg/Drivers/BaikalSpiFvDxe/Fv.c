@@ -26,9 +26,9 @@
 #include <Protocol/BlockIo.h>
 #include <Guid/VariableFormat.h>
 #include <Guid/SystemNvDataGuid.h>
-#include <Library/BaikalSpiLib.h>
 #include <Library/BaikalSmcLib.h>
 #include <Library/BaikalDebug.h>
+#include <Platform/BaikalFlashMap.h>
 
 
 /*
@@ -53,7 +53,7 @@ BAIKA_FV_DEVICE_PATH dp1 = {
       }
     },
     {
-      0x2, 0x2, 0x2, { 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB, 0xB }
+      0x1eb93f44, 0xdf73, 0x47b4, {0xb6, 0x01, 0xae, 0xe3, 0xcd, 0x3f, 0xcb, 0xca}
     },
   },
   {
@@ -72,7 +72,12 @@ BAIKA_FV_DEVICE_PATH dp1 = {
 * fv
 *==================================================
 */
-  STATIC smc_flash_t *flash;
+  typedef struct {
+      uint32_t sector_size;
+      uint32_t n_sectors;
+  } flash_info_t;
+
+  STATIC flash_info_t *info;
   STATIC VOID*      mNvStorageBase;
   STATIC EFI_HANDLE mBaikalSpiFvHandle;
   STATIC EFI_EVENT  mVirtualAddressChangeEvent;
@@ -210,8 +215,8 @@ BAIKA_FV_DEVICE_PATH dp1 = {
     OUT       UINTN                               *NumberOfBlocks
     )
   {
-    *BlockSize = flash->info.sector_size;
-    *NumberOfBlocks = mNvStorageSize / flash->info.sector_size - (UINTN)Lba;
+    *BlockSize = info->sector_size;
+    *NumberOfBlocks = mNvStorageSize / info->sector_size - (UINTN)Lba;
     return EFI_SUCCESS;
   }
 
@@ -271,12 +276,12 @@ BAIKA_FV_DEVICE_PATH dp1 = {
     IN OUT    UINT8                               *Buffer
     )
   {
-    UINTN offset = Lba * flash->info.sector_size + Offset;
+    UINTN offset = Lba * info->sector_size + Offset;
     VOID *ram = (VOID*)(offset + (UINTN)mNvStorageBase);
 
     // flash -> ram
-    UINTN adr = offset + UEFI_VAR_OFFSET;
-    flash->smc.read(&flash->smc, adr,ram,*NumBytes);
+    UINTN adr = offset + FLASH_MAP_VAR;
+    smc_read(adr,ram,*NumBytes);
 
     // ram -> buffer
     CopyMem (Buffer,ram,*NumBytes);
@@ -351,15 +356,15 @@ BAIKA_FV_DEVICE_PATH dp1 = {
     IN        UINT8                               *Buffer
     )
   {
-    UINTN offset = Lba* flash->info.sector_size + Offset;
+    UINTN offset = Lba* info->sector_size + Offset;
     VOID *ram = (VOID*)(offset + (UINTN)mNvStorageBase);
 
     // buffer -> ram
     CopyMem (ram,Buffer,*NumBytes);  // Copy the data we just wrote to the in-memory copy of the firmware volume
 
     // ram -> flash
-    UINTN adr = offset + UEFI_VAR_OFFSET;
-    flash->smc.write(&flash->smc, adr,ram,*NumBytes);
+    UINTN adr = offset + FLASH_MAP_VAR;
+    smc_write(adr,ram,*NumBytes);
 
     return EFI_SUCCESS;
   }
@@ -428,17 +433,17 @@ BAIKA_FV_DEVICE_PATH dp1 = {
        Lba = VA_ARG (Args, EFI_LBA))
     {
       UINTN cnt = VA_ARG (Args, UINTN);
-      UINTN size = cnt * flash->info.sector_size;
+      UINTN size = cnt * info->sector_size;
 
-      UINTN offset = Lba * flash->info.sector_size;
+      UINTN offset = Lba * info->sector_size;
       VOID *ram = (VOID*)(offset + (UINTN)mNvStorageBase);
 
       // erase ram
       SetMem64 (ram, size, ~0UL);
 
       // erase flash
-      UINTN adr = offset + UEFI_VAR_OFFSET;
-      flash->smc.erase (&flash->smc, adr,size);
+      UINTN adr = offset + FLASH_MAP_VAR;
+      smc_erase (adr,size);
 
     }
     VA_END (Args);
@@ -483,6 +488,7 @@ BAIKA_FV_DEVICE_PATH dp1 = {
   {
     // NonVolatile
     EfiConvertPointer (0x0, (VOID **)&mNvStorageBase);
+    EfiConvertPointer (0x0, (VOID **)&info);
 
     // Fvb
     EfiConvertPointer (0x0, (VOID**) &mBaikalSpiFvProtocol.GetAttributes);
@@ -493,27 +499,7 @@ BAIKA_FV_DEVICE_PATH dp1 = {
     EfiConvertPointer (0x0, (VOID**) &mBaikalSpiFvProtocol.Write);
     EfiConvertPointer (0x0, (VOID**) &mBaikalSpiFvProtocol.EraseBlocks);
 
-    // ---------
-    // Smc
-    // ---------
-
-    // external
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.info));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.erase));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.write));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.read));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.push));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.pull));
-
-    // internal
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.position));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.write_buf));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.read_buf));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.push_4word));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.pull_4word));
-    EfiConvertPointer (0x0, (VOID**) &(flash->smc.cmd));
-
-    EfiConvertPointer (0x0, (VOID **)&flash);
+    smc_convert_pointer();
   }
 
 
@@ -630,7 +616,6 @@ BAIKA_FV_DEVICE_PATH dp1 = {
       EARLY_PRINT ("Variable Store Length does not match\n");
       return EFI_NOT_FOUND;
     }
-
     return EFI_SUCCESS;
   }
 
@@ -647,22 +632,28 @@ BAIKA_FV_DEVICE_PATH dp1 = {
       PcdGet64 (PcdFlashNvStorageVariableBase64) :
       PcdGet32 (PcdFlashNvStorageVariableBase));
 
-    Status = gBS->AllocatePages(AllocateAddress, EfiRuntimeServicesData, EFI_SIZE_TO_PAGES(mNvStorageSize), (EFI_PHYSICAL_ADDRESS *)&mNvStorageBase);
+    Status = gBS->AllocatePages(AllocateAddress,
+      EfiRuntimeServicesData,
+      EFI_SIZE_TO_PAGES(mNvStorageSize),
+      (EFI_PHYSICAL_ADDRESS *)&mNvStorageBase);
     ASSERT_EFI_ERROR (Status);
-    SetMem64 ((VOID*) mNvStorageBase, mNvStorageSize, ~0UL);   // Clear old data...
+    SetMem64 ((VOID*) mNvStorageBase, mNvStorageSize, ~0UL);
 
     EARLY_PRINT ("read headers from flash\n");
-    flash->smc.read(&flash->smc, UEFI_VAR_OFFSET,mNvStorageBase,mNvStorageSize);
+    smc_read(FLASH_MAP_VAR,mNvStorageBase,mNvStorageSize);
 
     if (ValidateFvHeader (mNvStorageBase) != EFI_SUCCESS) {
       EARLY_PRINT ("create default headers\n");
       InitializeFvAndVariableStoreHeaders (mNvStorageBase);
 
       EARLY_PRINT ("write headers to flash\n");
-      flash->smc.erase(&flash->smc, UEFI_VAR_OFFSET,mNvStorageSize);
-      flash->smc.write(&flash->smc, UEFI_VAR_OFFSET,mNvStorageBase,mNvStorageSize);
+      smc_erase(FLASH_MAP_VAR,mNvStorageSize);
+      smc_write(FLASH_MAP_VAR,mNvStorageBase,mNvStorageSize);
     }
-    EARLY_PRINT ("Using NV store FV in-memory copy at 0x%lx, flash offset == 0x%lx\n", mNvStorageBase, UEFI_VAR_OFFSET);
+
+    EARLY_PRINT ("Using NV store FV in-memory copy at 0x%lx, flash offset == 0x%lx\n",
+      mNvStorageBase, FLASH_MAP_VAR);
+
     return Status;
   }
 
@@ -722,30 +713,12 @@ EFI_STATUS EFIAPI BaikalSpiFvDxeInitialize (
   /* ALLOCATE */
   Status = gBS->AllocatePool (
     EfiRuntimeServicesData,
-    sizeof(smc_flash_t),
-    (VOID **)&flash
+    sizeof(flash_info_t),
+    (VOID **)&info
   );
 
-  /* LIB */
-  // external
-  flash->smc.info       = smc_info;
-  flash->smc.erase      = smc_erase;
-  flash->smc.write      = smc_write;
-  flash->smc.read       = smc_read;
-  flash->smc.push       = smc_push;
-  flash->smc.pull       = smc_pull;
-
-  // internal
-  flash->smc.position   = smc_position;
-  flash->smc.write_buf  = smc_write_buf;
-  flash->smc.read_buf   = smc_read_buf;
-  flash->smc.push_4word = smc_push_4word;
-  flash->smc.pull_4word = smc_pull_4word;
-  flash->smc.cmd        = smc_cmd;
-
-
   /* INFO */
-  smc_info(&flash->smc, &(flash->info.sector_size), &(flash->info.n_sectors));
+  smc_info(&info->sector_size, &info->n_sectors);
 
 
   /* INSTALL */

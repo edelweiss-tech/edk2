@@ -121,9 +121,12 @@ DWUartInitializePort (
     return RETURN_INVALID_PARAMETER;
   }
 
-
   /* DLAB is writeable only when UART is not busy (USR[0] is equal to 0). */
-  while ((READ_UART_REG(UART_USR(0)) & UART_USR_BUSY));
+  while (READ_UART_REG(UART_USR(0)) & UART_USR_BUSY) {
+    while (READ_UART_REG(UART_LSR(0)) & UART_LSR_DR) {
+      READ_UART_REG(UART_RBR(0));
+    }
+  }
 
   WRITE_UART_REG(UART_LCR(0), 0x80);  /* DLAB -> 1 */
 

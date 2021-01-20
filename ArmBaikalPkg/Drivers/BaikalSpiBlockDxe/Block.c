@@ -26,21 +26,21 @@
 #include <Protocol/BlockIo.h>
 #include <Guid/VariableFormat.h>
 #include <Guid/SystemNvDataGuid.h>
-#include <Library/BaikalSpiLib.h>
 #include <Library/BaikalSmcLib.h>
 #include <Library/BaikalDebug.h>
+#include <Platform/BaikalFlashMap.h>
+
 #include "Block.h"
 
+#define DIVIDE_ROUND_UP(x,n)  ( ((x)+(n)-1) / (n))
 
-// static flash_info_t info;
-static smc_flash_t flash;
+static uint32_t sector_size;
+static uint32_t n_sectors;
 
 EFI_HANDLE mBaikalSpiBlockHandle;
 BAIKAL_SPI_PRIVATE_DATA mBaikalSpi;
 BAIKAL_SPI_DEVICE_PATH dp0 = {
-  //Vendor
   {
-    //Header
     {
       HARDWARE_DEVICE_PATH,
       HW_VENDOR_DP,
@@ -49,12 +49,10 @@ BAIKAL_SPI_DEVICE_PATH dp0 = {
         (UINT8) (sizeof(VENDOR_DEVICE_PATH) >> 8)
       }
     },
-    //Guid
     {
-      0xA, 0xA, 0xA, { 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA, 0xA }
+      0x7ba87e01, 0x7c26, 0x4fdf, {0xb6, 0x0b, 0x06, 0x0d, 0x63, 0x46, 0xaa, 0x80}
     },
   },
-  //End
   {
     END_DEVICE_PATH_TYPE,
     END_ENTIRE_DEVICE_PATH_SUBTYPE,
@@ -158,9 +156,9 @@ BAIKAL_SPI_DEVICE_PATH dp0 = {
     if ((Lba + NumberOfBlocks - 1) > PrivateData->Media.LastBlock) {
       return EFI_INVALID_PARAMETER;
     }
-    SpiOffset = Lba * SPI_DISK_BLOCK_SIZE + UEFI_BLOCK_OFFSET; //1024*1024*8;
+    SpiOffset = Lba * FAT_BLOCK_SIZE + FLASH_MAP_BLOCK;
 
-    smc_read(&flash.smc, SpiOffset,Buffer,BufferSize);
+    smc_read(SpiOffset,Buffer,BufferSize);
 
     return EFI_SUCCESS;
   }
@@ -234,37 +232,27 @@ BAIKAL_SPI_DEVICE_PATH dp0 = {
       return EFI_INVALID_PARAMETER;
     }
 
-    UINTN SpiOffset  = Lba * SPI_DISK_BLOCK_SIZE  + UEFI_BLOCK_OFFSET;
-    UINTN adr = (SpiOffset / flash.info.sector_size) * flash.info.sector_size;
+    UINTN SpiOffset  = Lba * FAT_BLOCK_SIZE  + FLASH_MAP_BLOCK;
+    UINTN adr = (SpiOffset / sector_size) * sector_size;
     UINTN offset = SpiOffset - adr;
     UINTN total_size = offset + BufferSize;
-    UINTN cnt = DIVIDE(total_size, flash.info.sector_size);
-    UINTN size = cnt * flash.info.sector_size;
-
-    if(total_size > size){
-      return EFI_OUT_OF_RESOURCES;
-    }
+    UINTN cnt = DIVIDE_ROUND_UP(total_size, sector_size);
+    UINTN size = cnt * sector_size;
 
     VOID *buf = AllocatePool(size);
-    if(!buf){
+    if (!buf){
       return EFI_OUT_OF_RESOURCES;
     }
 
-    smc_read(&flash.smc, adr,buf,size);
-
-    if(offset + BufferSize > size){
-      goto out;
-    }
-
-    CopyMem (buf+offset,Buffer,BufferSize);
-
-    smc_erase(&flash.smc, adr,size);
-    smc_write(&flash.smc, adr,buf,size);
+    smc_read(adr,buf,size);
+    CopyMem(buf+offset,Buffer,BufferSize);
+    smc_erase(adr,size);
+    smc_write(adr,buf,size);
     ref = EFI_SUCCESS;
 
-  out:
-    if(buf)
+    if (buf)
       FreePool(buf);
+
     return ref;
   }
 
@@ -320,7 +308,7 @@ BAIKAL_SPI_DEVICE_PATH dp0 = {
     BlockIo  = &PrivateData->BlockIo;
     Media    = &PrivateData->Media;
 
-    PrivateData->Size = flash.info.sector_size * flash.info.n_sectors - UEFI_BLOCK_OFFSET;
+    PrivateData->Size = sector_size * n_sectors - FLASH_MAP_BLOCK;
     PrivateData->Signature = BAIKAL_SPI_PRIVATE_DATA_SIGNATURE;
 
     CopyMem (BlockIo, &mBaikalSpiBlockIoProtocol, sizeof (EFI_BLOCK_IO_PROTOCOL));
@@ -331,8 +319,8 @@ BAIKAL_SPI_DEVICE_PATH dp0 = {
     Media->LogicalPartition = FALSE;
     Media->ReadOnly         = FALSE;
     Media->WriteCaching     = FALSE;
-    Media->BlockSize        = SPI_DISK_BLOCK_SIZE;
-    Media->LastBlock        = DivU64x32 (PrivateData->Size + SPI_DISK_BLOCK_SIZE - 1, SPI_DISK_BLOCK_SIZE) - 1;
+    Media->BlockSize        = FAT_BLOCK_SIZE;
+    Media->LastBlock        = DivU64x32 (PrivateData->Size + FAT_BLOCK_SIZE - 1, FAT_BLOCK_SIZE) - 1;
     PrivateData->DevicePath = dp0;
 
     /* INSTALL */
@@ -361,29 +349,12 @@ EFI_STATUS EFIAPI BaikalSpiBlockDxeInitialize (
 {
   EFI_STATUS Status;
 
-  /* LIB */
-  // external
-  flash.smc.info       = smc_info;
-  flash.smc.erase      = smc_erase;
-  flash.smc.write      = smc_write;
-  flash.smc.read       = smc_read;
-  flash.smc.push       = smc_push;
-  flash.smc.pull       = smc_pull;
-
-  // internal
-  flash.smc.position   = smc_position;
-  flash.smc.write_buf  = smc_write_buf;
-  flash.smc.read_buf   = smc_read_buf;
-  flash.smc.push_4word = smc_push_4word;
-  flash.smc.pull_4word = smc_pull_4word;
-  flash.smc.cmd        = smc_cmd;
-
   /* INFO */
-  smc_info(&flash.smc, &(flash.info.sector_size), &(flash.info.n_sectors));
+  smc_info(&sector_size, &n_sectors);
 
   /* INSTALL */
   Status = InstallBlock();
-  if(Status != EFI_SUCCESS){
+  if (Status != EFI_SUCCESS){
     return Status;
   }
 

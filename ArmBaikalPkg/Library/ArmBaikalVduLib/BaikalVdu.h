@@ -14,19 +14,25 @@
 #ifndef _BAIKAL_VDU_H__
 #define _BAIKAL_VDU_H__
 
+#define LCRU_LVDS     0x20010000
+#define LCRU_HDMI     0x30010000
+#define VDU_LVDS      0x202d0000
+#define VDU_HDMI      0x30260000
+
 // Controller Register Offsets
-#define BAIKAL_VDU_REG_CR1             ((UINTN)PcdGet32 (PcdVduBase) + 0x000)
-#define BAIKAL_VDU_REG_HTR             ((UINTN)PcdGet32 (PcdVduBase) + 0x008)
-#define BAIKAL_VDU_REG_VTR1            ((UINTN)PcdGet32 (PcdVduBase) + 0x00C)
-#define BAIKAL_VDU_REG_VTR2            ((UINTN)PcdGet32 (PcdVduBase) + 0x010)
-#define BAIKAL_VDU_REG_PCTR            ((UINTN)PcdGet32 (PcdVduBase) + 0x014)
-#define BAIKAL_VDU_REG_IMR             ((UINTN)PcdGet32 (PcdVduBase) + 0x01C)
-#define BAIKAL_VDU_REG_DBAR            ((UINTN)PcdGet32 (PcdVduBase) + 0x028)
-#define BAIKAL_VDU_REG_DEAR            ((UINTN)PcdGet32 (PcdVduBase) + 0x030)
-#define BAIKAL_VDU_REG_HVTER           ((UINTN)PcdGet32 (PcdVduBase) + 0x044)
-#define BAIKAL_VDU_REG_HPPLOR          ((UINTN)PcdGet32 (PcdVduBase) + 0x048)
-#define BAIKAL_VDU_REG_CIR             ((UINTN)PcdGet32 (PcdVduBase) + 0x1FC)
-#define BAIKAL_VDU_REG_MRR             ((UINTN)PcdGet32 (PcdVduBase) + 0xFFC)
+#define BAIKAL_VDU_REG_CR1(x)           ((UINTN) (x) + 0x000)
+#define BAIKAL_VDU_REG_HTR(x)           ((UINTN) (x) + 0x008)
+#define BAIKAL_VDU_REG_VTR1(x)          ((UINTN) (x) + 0x00C)
+#define BAIKAL_VDU_REG_VTR2(x)          ((UINTN) (x) + 0x010)
+#define BAIKAL_VDU_REG_PCTR(x)          ((UINTN) (x) + 0x014)
+#define BAIKAL_VDU_REG_IMR(x)           ((UINTN) (x) + 0x01C)
+#define BAIKAL_VDU_REG_DBAR(x)          ((UINTN) (x) + 0x028)
+#define BAIKAL_VDU_REG_DEAR(x)          ((UINTN) (x) + 0x030)
+#define BAIKAL_VDU_REG_HVTER(x)         ((UINTN) (x) + 0x044)
+#define BAIKAL_VDU_REG_HPPLOR(x)        ((UINTN) (x) + 0x048)
+#define BAIKAL_VDU_REG_GPIOR(x)         ((UINTN) (x) + 0x1F8)
+#define BAIKAL_VDU_REG_CIR(x)           ((UINTN) (x) + 0x1FC)
+#define BAIKAL_VDU_REG_MRR(x)           ((UINTN) (x) + 0xFFC)
 
 /**********************************************************************/
 
@@ -51,6 +57,7 @@
 #define BAIKAL_VDU_CR1_FDW_8_WORDS        (1 << 16)
 #define BAIKAL_VDU_CR1_FDW_16_WORDS       (2 << 16)
 #define BAIKAL_VDU_CR1_OPS_LCD24          (1 << 13)
+#define BAIKAL_VDU_CR1_OPS_LCD18          (0 << 13)
 #define BAIKAL_VDU_CR1_OPS_555            (1 << 12)
 #define BAIKAL_VDU_CR1_VSP                (1 << 11)
 #define BAIKAL_VDU_CR1_HSP                (1 << 10)
@@ -73,9 +80,14 @@
 #define BAIKAL_VDU_MRR_DEAR_MRR_MASK      (0xfffffff8)
 #define BAIKAL_VDU_MRR_OUTSTND_RQ(x)      ((x >> 1) << 0)
 
+#define BAIKAL_VDU_GPIOR_UHD_SNGL_PORT    (0 << 18)
+#define BAIKAL_VDU_GPIOR_UHD_DUAL_PORT    (1 << 18)
+#define BAIKAL_VDU_GPIOR_UHD_QUAD_PORT    (2 << 18)
+#define BAIKAL_VDU_GPIOR_UHD_ENB          (1 << 17)
+
 #define BAIKAL_VDU_PERIPH_ID              0x0090550F
 
-VOID
+EFI_STATUS
 BaikalSetVduFrequency(
   UINT32 LcruId,
   UINT32 RefFreq,

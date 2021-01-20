@@ -523,7 +523,15 @@ UefiMain (
         (gST->Hdr.Revision&0x0000ffff),
         gST->FirmwareVendor,
         gST->FirmwareRevision
-       );
+      );
+
+      ShellPrintHiiEx (
+        -1,
+        -1,
+        NULL,
+        STRING_TOKEN (STR_VER_OUTPUT_SDK_BM),
+        ShellInfoObject.HiiHandle
+      );
     }
 
     //

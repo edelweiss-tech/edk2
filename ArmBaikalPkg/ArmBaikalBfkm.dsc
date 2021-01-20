@@ -91,7 +91,11 @@
   RVCT:*_*_ARM_PLATFORM_FLAGS == --cpu Cortex-A15 -I$(WORKSPACE)/ArmBaikalPkg/Include
   GCC:*_*_ARM_PLATFORM_FLAGS == -mcpu=cortex-a15 -I$(WORKSPACE)/ArmBaikalPkg/Include
 
-!if $(BE_QEMU) == TRUE
+!if $(BE_MITX) == TRUE
+  *_*_AARCH64_PLATFORM_FLAGS == -I$(WORKSPACE)/ArmBaikalPkg/Include -DBE_MITX
+!elseif $(BE_BFKM) == TRUE
+  *_*_AARCH64_PLATFORM_FLAGS == -I$(WORKSPACE)/ArmBaikalPkg/Include -DBE_BFKM
+!elseif $(BE_QEMU) == TRUE
   *_*_AARCH64_PLATFORM_FLAGS == -I$(WORKSPACE)/ArmBaikalPkg/Include -DBE_QEMU
 !else
   *_*_AARCH64_PLATFORM_FLAGS == -I$(WORKSPACE)/ArmBaikalPkg/Include
@@ -211,10 +215,17 @@
   # Set video resolution for boot options and for text setup.
   # PlatformDxe can set the former at runtime.
   #
-  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|800
-  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|600
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|640
-  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|480
+  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoHorizontalResolution|1920
+  gEfiMdeModulePkgTokenSpaceGuid.PcdVideoVerticalResolution|1080
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoHorizontalResolution|1920
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSetupVideoVerticalResolution|1080
+
+  ## This PCD defines the Console output column and the default value is 25 according to UEFI spec.
+  #  This PCD could be set to 0 then console output could be at max column and max row.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutRow|25
+  ## This PCD defines the Console output row and the default value is 80 according to UEFI spec.
+  #  This PCD could be set to 0 then console output could be at max column and max row.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdConOutColumn|80
 
   #
   # SMBIOS entry point version
@@ -289,7 +300,12 @@
   MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
   MdeModulePkg/Universal/SerialDxe/SerialDxe.inf
 
-  ArmBaikalPkg/Drivers/LcdGraphicsOutputDxe/LcdGraphicsOutputDxe.inf
+  ArmBaikalPkg/Drivers/LcdGraphicsOutputDxe/LcdGraphicsOutputDxe.inf {
+!if $(TARGET) == DEBUG
+    <PcdsFixedAtBuild>
+      gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x8FFFFFBF
+!endif
+  }
 
   MdeModulePkg/Universal/HiiDatabaseDxe/HiiDatabaseDxe.inf
 
@@ -370,13 +386,14 @@
   #
   #  AHCI Support
   #
+  ArmBaikalPkg/Drivers/PciEmulation/PciEmulation.inf
   MdeModulePkg/Bus/Ata/AtaAtapiPassThru/AtaAtapiPassThru.inf
   MdeModulePkg/Bus/Ata/AtaBusDxe/AtaBusDxe.inf
+  MdeModulePkg/Bus/Pci/NonDiscoverablePciDeviceDxe/NonDiscoverablePciDeviceDxe.inf
+  MdeModulePkg/Bus/Pci/NvmExpressDxe/NvmExpressDxe.inf
+  MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
   MdeModulePkg/Bus/Scsi/ScsiBusDxe/ScsiBusDxe.inf
   MdeModulePkg/Bus/Scsi/ScsiDiskDxe/ScsiDiskDxe.inf
-  MdeModulePkg/Bus/Pci/SataControllerDxe/SataControllerDxe.inf
-  MdeModulePkg/Bus/Pci/NonDiscoverablePciDeviceDxe/NonDiscoverablePciDeviceDxe.inf
-  ArmBaikalPkg/Drivers/PciEmulation/PciEmulation.inf
 
   #
   # SMBIOS Support
@@ -391,8 +408,8 @@
   # PCI support
   #
   ArmBaikalPkg/Drivers/BaikalPciCpuIo2Dxe/BaikalPciCpuIo2Dxe.inf
-  MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridgeDxe.inf
   MdeModulePkg/Bus/Pci/PciBusDxe/PciBusDxe.inf
+  MdeModulePkg/Bus/Pci/PciHostBridgeDxe/PciHostBridgeDxe.inf
 
   #
   # Video support

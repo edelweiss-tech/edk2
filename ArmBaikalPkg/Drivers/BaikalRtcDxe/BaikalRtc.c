@@ -15,6 +15,7 @@ Abstract:
 #include <Library/DebugLib.h>
 #include <Library/UefiDriverEntryPoint.h>
 #include <Library/UefiBootServicesTableLib.h>
+#include <Library/UefiRuntimeLib.h>
 #include "i2c_dw.h"
 
 EFI_TIME defaultTime = {
@@ -84,13 +85,17 @@ Returns:
 {
   EFI_STATUS            Status;
 
+  if (EfiAtRuntime()) {
+    return EFI_UNSUPPORTED;
+  }
+
   //
   // Check parameter for null pointer
   //
   if (Time == NULL) {
     return EFI_INVALID_PARAMETER;
-
   }
+
   Status = get_time(Time);
   if (EFI_ERROR (Status)) {
     return Status;
@@ -137,6 +142,10 @@ Returns:
 // TODO:    EFI_SUCCESS - add return value to function comment
 {
   EFI_STATUS            Status;
+
+  if (EfiAtRuntime()) {
+    return EFI_UNSUPPORTED;
+  }
 
   if (Time == NULL) {
     return EFI_INVALID_PARAMETER;
