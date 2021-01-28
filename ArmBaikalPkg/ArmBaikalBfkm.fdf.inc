@@ -81,10 +81,10 @@ READ_LOCK_STATUS   = TRUE
   INF ArmPkg/Drivers/TimerDxe/TimerDxe.inf
   INF ArmBaikalPkg/Drivers/BaikalSpiFvDxe/BaikalSpiFvDxe.inf
   INF ArmBaikalPkg/Drivers/BaikalSpiBlockDxe/BaikalSpiBlockDxe.inf
-!if $(BE_MITX) == TRUE
   INF ArmBaikalPkg/Drivers/BaikalI2cDxe/BaikalI2cDxe.inf
   INF ArmBaikalPkg/Drivers/I2cDevicesDxe/I2cDevicesDxe.inf
   INF MdeModulePkg/Bus/I2c/I2cDxe/I2cDxe.inf
+!if $(BE_MITX) == TRUE
   INF ArmBaikalPkg/Drivers/Pcf2127RtcDxe/Pcf2127RtcDxe.inf
   INF ArmBaikalPkg/Drivers/Ps2MuxDxe/Ps2MuxDxe.inf
   INF ArmBaikalPkg/Drivers/TpBmcDxe/TpBmcDxe.inf

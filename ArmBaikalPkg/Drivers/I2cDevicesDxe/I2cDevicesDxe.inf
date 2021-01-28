@@ -45,6 +45,7 @@
   gArmBaikalNonDiscoverableI2cMasterGuid
   gTpBmcI2cDeviceGuid
   gPcf2127RtcI2cDeviceGuid
+  gEepromI2cDeviceGuid
   gPs2MuxI2cDeviceGuid
 
 [Protocols]
