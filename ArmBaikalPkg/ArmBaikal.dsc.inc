@@ -34,7 +34,7 @@
   DebugPrintErrorLevelLib|MdePkg/Library/BaseDebugPrintErrorLevelLib/BaseDebugPrintErrorLevelLib.inf
   SpiLib|ArmBaikalPkg/Library/ArmBaikalSpiLib/ArmBaikalSpiLib.inf
   BaikalFruLib|ArmBaikalPkg/Library/BaikalFruLib/BaikalFruLib.inf
-  BaikalI2cLib|ArmBaikalPkg/Library/BaikalI2cLib/BaikalI2cLib.inf
+  # BaikalI2cLib|ArmBaikalPkg/Library/BaikalI2cLib/BaikalI2cLib.inf
   BaikalSmcLib|ArmBaikalPkg/Library/ArmBaikalSmcLib/ArmBaikalSmcLib.inf
   BaseLib|MdePkg/Library/BaseLib/BaseLib.inf
   SynchronizationLib|MdePkg/Library/BaseSynchronizationLib/BaseSynchronizationLib.inf
