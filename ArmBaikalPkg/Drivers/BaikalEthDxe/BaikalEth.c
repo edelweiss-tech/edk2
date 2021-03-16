@@ -71,6 +71,11 @@ LocateI2cEepromDevice (
     }
   }
 
+  //
+  // Free the handle array
+  //
+  gBS->FreePool (HandleBuffer);
+
   return Found ? EFI_SUCCESS : EFI_NOT_FOUND;
 }
 
