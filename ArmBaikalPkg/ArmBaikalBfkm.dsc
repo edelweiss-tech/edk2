@@ -92,7 +92,7 @@
   GCC:*_*_ARM_PLATFORM_FLAGS == -mcpu=cortex-a15 -I$(WORKSPACE)/ArmBaikalPkg/Include
 
 !if $(BE_MITX) == TRUE
-  *_*_AARCH64_PLATFORM_FLAGS == -I$(WORKSPACE)/ArmBaikalPkg/Include -DBE_MITX
+  *_*_AARCH64_PLATFORM_FLAGS == -I$(WORKSPACE)/ArmBaikalPkg/Include -DBE_MITX -DBOARD_VER=$(BOARD_VER)
 !elseif $(BE_BFKM) == TRUE
   *_*_AARCH64_PLATFORM_FLAGS == -I$(WORKSPACE)/ArmBaikalPkg/Include -DBE_BFKM
 !elseif $(BE_QEMU) == TRUE
